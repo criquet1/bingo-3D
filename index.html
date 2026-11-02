@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boulier de bingo 3D</title>
+</head>
+<body>
+  <main>
+    <section id="colonne-scene">
+      <div id="scene">
+        <div id="invite">👆 Clique sur le boulier pour tirer une boule</div>
+      </div>
+      <div id="boutons">
+        <div id="menu-secondaire">
+          <button id="btn-auto">⏱️ Tirage auto</button>
+          <button id="btn-son">🔊 Son</button>
+          <button id="btn-voix">🗣️ Voix : non</button>
+          <button id="btn-reset">↺ Recommencer</button>
+        </div>
+      </div>
+      <p class="aide">Clique sur le boulier (ou sur la boule) pour tirer · glisse la souris pour tourner autour · molette pour zoomer · barre d'espace pour tirer · touche M pour cacher ou montrer ce menu</p>
+    </section>
+
+    <section id="panneau">
+      <div id="compteur" aria-live="polite"></div>
+      <div id="zone-tableau">
+        <div id="tableau"></div>
+        <div id="progres"><div></div></div>
+      </div>
+    </section>
+  </main>
+
+  <canvas id="confetti"></canvas>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

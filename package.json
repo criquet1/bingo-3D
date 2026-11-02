@@ -1,0 +1,19 @@
+{
+  "name": "bingo-3d",
+  "version": "1.0.0",
+  "description": "Boulier de bingo en 3D (Three.js + cannon-es)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.5"
+  },
+  "type": "module",
+  "private": true
+}
