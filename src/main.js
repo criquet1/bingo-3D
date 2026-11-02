@@ -1,6 +1,7 @@
 import './style.css';
 import { LETTRES, COULEURS, lettrePour } from './donnees.js';
 import { audio, note, parler, taisezVous, reglages } from './audio.js';
+import { t, langue, setLangue } from './langues.js';
 import { confettis } from './confettis.js';
 import { creerMachine } from './machine.js';
 
@@ -68,8 +69,8 @@ function construireTableau() {
 function majCompteur(anime) {
   const n = tirees.length;
   const fini = restantes.length === 0 && n > 0;
-  $('compteur').textContent = fini ? '🎉 Toutes les boules sont sorties! 🎉' : '';
-  $('progres').title = n + ' boule' + (n > 1 ? 's' : '') + ' tirée' + (n > 1 ? 's' : '') + ' sur 75';
+  $('compteur').textContent = fini ? t('fini') : '';
+  $('progres').title = t('progres', n);
   $('progres').firstElementChild.style.height = (n / 75) * 100 + '%';
   if (anime && fini) {
     $('compteur').classList.remove('bump');
@@ -82,6 +83,26 @@ function majBoutons() {
   document.body.classList.toggle('occupe', occupe);
   document.body.classList.toggle('termine', restantes.length === 0);
   $('btn-reset').disabled = occupe;
+}
+
+/* ========== Textes selon la langue ========== */
+function majTextesBoutons() {
+  $('btn-auto').textContent = auto ? t('autoOui') : t('auto');
+  $('btn-auto').classList.toggle('actif', auto);
+  $('btn-son').textContent = reglages.son ? t('son') : t('sonOff');
+  $('btn-voix').textContent = reglages.voix ? t('voixOui') : t('voixNon');
+  $('btn-voix').classList.toggle('actif', reglages.voix);
+  $('btn-reset').textContent = t('reset');
+  $('btn-langue').textContent = t('autreLangue');
+}
+
+function majTextes() {
+  document.documentElement.lang = langue();
+  document.title = t('titre');
+  $('invite').textContent = t('invite');
+  $('aide').textContent = t('aide');
+  majTextesBoutons();
+  majCompteur(false);
 }
 
 /* ========== Le tirage ========== */
@@ -141,8 +162,7 @@ function reveler(n) {
 
   if (restantes.length === 0) {
     auto = false;
-    $('btn-auto').classList.remove('actif');
-    $('btn-auto').textContent = '⏱️ Tirage auto';
+    majTextesBoutons();
     for (let k = 0; k < 6; k++) {
       setTimeout(() => confettis(Math.random() * innerWidth, innerHeight * 0.3, 120, 1.3), k * 350);
     }
@@ -212,36 +232,40 @@ $('btn-reset').addEventListener('click', async () => {
   if (tirees.length === 0) { recommencer(); return; }
   // 1re boîte : en haut, « Oui » à gauche
   const premiere = await demander({
-    message: 'Recommencer une nouvelle partie?',
-    oui: 'Oui', non: 'Non', ouiAGauche: true, dy: '-20vh',
+    message: t('question1'),
+    oui: t('oui'), non: t('non'), ouiAGauche: true, dy: '-20vh',
   });
   if (!premiere) return;
   // 2e boîte : plus bas, « Oui » à droite et en rouge, pour qu'on ne clique pas par réflexe
   const seconde = await demander({
-    message: 'Êtes-vous certain? La partie en cours sera effacée.',
-    oui: 'Oui, tout effacer', non: 'Non, garder ma partie', ouiAGauche: false, rouge: true, dy: '20vh',
+    message: t('question2'),
+    oui: t('oui2'), non: t('non2'), ouiAGauche: false, rouge: true, dy: '20vh',
   });
   if (seconde) recommencer();
 });
 
 $('btn-auto').addEventListener('click', e => {
   auto = !auto;
-  e.currentTarget.classList.toggle('actif', auto);
-  e.currentTarget.textContent = auto ? '⏱️ Auto : oui' : '⏱️ Tirage auto';
+  majTextesBoutons();
   clearTimeout(timerAuto);
   if (auto && !occupe) tirer();
 });
 
 $('btn-son').addEventListener('click', e => {
   reglages.son = !reglages.son;
-  e.currentTarget.textContent = reglages.son ? '🔊 Son' : '🔇 Son';
+  majTextesBoutons();
 });
 
 $('btn-voix').addEventListener('click', e => {
   reglages.voix = !reglages.voix;
-  e.currentTarget.textContent = '🗣️ Voix : ' + (reglages.voix ? 'oui' : 'non');
-  e.currentTarget.classList.toggle('actif', reglages.voix);
+  majTextesBoutons();
   if (!reglages.voix) taisezVous();
+});
+
+$('btn-langue').addEventListener('click', () => {
+  setLangue(langue() === 'en' ? 'fr' : 'en');
+  taisezVous();
+  majTextes();
 });
 
 // touche M : cache ou montre le petit menu du bas et le texte d'aide
@@ -262,3 +286,4 @@ addEventListener('keydown', e => {
 window.__bingo = { machine, tirer };
 
 recommencer();
+majTextes();

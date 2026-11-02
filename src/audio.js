@@ -1,4 +1,5 @@
 import { lettrePour } from './donnees.js';
+import { langueVoix } from './langues.js';
 
 export const reglages = { son: true, voix: false };
 
@@ -41,7 +42,7 @@ export function parler(n, attente = 0) {
   const jeton = jetonVoix;
   const dire = (texte, quandFini) => {
     const u = new SpeechSynthesisUtterance(texte);
-    u.lang = 'fr-CA';
+    u.lang = langueVoix();
     u.rate = 0.9;
     if (quandFini) u.onend = quandFini;
     speechSynthesis.speak(u);
