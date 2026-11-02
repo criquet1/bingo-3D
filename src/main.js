@@ -100,6 +100,7 @@ function majTextes() {
   document.documentElement.lang = langue();
   document.title = t('titre');
   $('invite').textContent = t('invite');
+  $('astuce-m').textContent = t('astuceM');
   $('aide').textContent = t('aide');
   majTextesBoutons();
   majCompteur(false);
@@ -268,12 +269,16 @@ $('btn-langue').addEventListener('click', () => {
   majTextes();
 });
 
-// touche M : cache ou montre le petit menu du bas et le texte d'aide
-addEventListener('keydown', e => {
-  if (e.key.toLowerCase() !== 'm' || e.ctrlKey || e.altKey || e.metaKey) return;
+// touche M (ou clic sur l'étiquette en haut du boulier) : cache ou montre le petit menu du bas et le texte d'aide
+function basculerMenu() {
   if (document.querySelector('.fond-dialogue')) return;   // pas pendant une boîte de confirmation
   document.body.classList.toggle('menu-cache');
+}
+addEventListener('keydown', e => {
+  if (e.key.toLowerCase() !== 'm' || e.ctrlKey || e.altKey || e.metaKey) return;
+  basculerMenu();
 });
+$('astuce-m').addEventListener('click', basculerMenu);
 
 addEventListener('keydown', e => {
   if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
